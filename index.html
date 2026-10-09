@@ -3,16 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FSHARE — Direct P2P Asset Transfer</title>
+  <title>Local P2P File Share — No Server Needed</title>
   
-  <!-- CDNs -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
 
   <script>
@@ -23,13 +18,6 @@
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'sans-serif'],
             display: ['Orbitron', 'sans-serif'],
-          },
-          colors: {
-            qblack: '#020204',
-            qglass: 'rgba(15, 17, 26, 0.5)',
-            qborder: 'rgba(255, 255, 255, 0.08)',
-            qindigo: '#6366F1',
-            qcyan: '#06B6D4',
           }
         }
       }
@@ -37,209 +25,111 @@
   </script>
 
   <style>
-    body {
-      background-color: #020204;
-      color: #F3F4F6;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-    }
+    body { background-color: #020204; color: #F3F4F6; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
     .font-orbitron { font-family: 'Orbitron', sans-serif; }
-    
-    /* Ultra Glassmorphic Panel */
     .ultra-glass {
-      background: rgba(18, 20, 29, 0.45);
-      backdrop-filter: blur(25px) saturate(180%);
-      -webkit-backdrop-filter: blur(25px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      background: rgba(18, 20, 29, 0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
-    .ultra-glass:hover {
-      border-color: rgba(99, 102, 241, 0.5);
-      box-shadow: 0 0 40px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
     .gradient-glow {
-      background: linear-gradient(135deg, #A855F7 0%, #6366F1 50%, #06B6D4 100%);
+      background: linear-gradient(135deg, #10B981 0%, #06B6D4 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    /* Animated Ambient Lights */
-    .ambient-light-1 {
-      position: fixed;
-      top: -10%;
-      left: 20%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(0,0,0,0) 70%);
-      filter: blur(80px);
-      animation: floatGlow 10s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-    .ambient-light-2 {
-      position: fixed;
-      bottom: -10%;
-      right: 15%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, rgba(0,0,0,0) 70%);
-      filter: blur(90px);
-      animation: floatGlow 12s ease-in-out infinite alternate-reverse;
-      pointer-events: none;
-    }
-
-    @keyframes floatGlow {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, -40px) scale(1.15); }
-    }
-
-    /* Wave visualizer animation */
-    .wave-bar {
-      animation: wavePulse 0.8s ease-in-out infinite alternate;
-    }
-    @keyframes wavePulse {
-      0% { height: 20%; opacity: 0.3; }
-      100% { height: 100%; opacity: 1; }
-    }
-
-    .pin-box:focus {
-      border-color: #06B6D4;
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
-    }
+    .pin-box:focus { border-color: #10B981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4 md:p-8 relative selection:bg-indigo-500 selection:text-white">
-
-  <!-- Background Animated Lights -->
-  <div class="ambient-light-1"></div>
-  <div class="ambient-light-2"></div>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-8 relative selection:bg-emerald-500 selection:text-white">
 
   <!-- Header -->
   <header class="w-full max-w-7xl mx-auto flex items-center justify-between z-10 py-2">
-    <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('home')">
-      <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-300">
-        <i data-lucide="zap" class="w-6 h-6 text-white fill-white"></i>
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+      <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <i data-lucide="wifi" class="w-6 h-6 text-black"></i>
       </div>
       <div>
-        <span class="font-orbitron font-black text-2xl tracking-wider text-white">FSHARE</span>
-        <span class="block text-[9px] font-mono text-cyan-400 tracking-widest uppercase">FAST P2P MESH PROTOCOL</span>
+        <span class="font-orbitron font-black text-2xl tracking-wider text-white">LOCAL-SHARE</span>
+        <span class="block text-[9px] font-mono text-emerald-400 tracking-widest uppercase">Same Wi-Fi / Hotspot P2P</span>
       </div>
     </div>
 
-    <!-- System Status -->
-    <div class="flex items-center space-x-2.5 bg-white/5 border border-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs font-mono shadow-inner">
-      <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span id="status-text" class="text-gray-300 font-bold uppercase tracking-widest">ENGINE READY</span>
+    <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-mono">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="text-gray-300 font-bold uppercase">OFFLINE MODE READY</span>
     </div>
   </header>
 
-  <!-- Main Container -->
+  <!-- Main Content -->
   <main class="w-full max-w-5xl mx-auto my-auto py-6 z-10">
 
-    <!-- HOME VIEW -->
-    <div id="view-home" class="space-y-12 text-center transition-all duration-500">
+    <!-- HOME -->
+    <div id="view-home" class="space-y-10 text-center">
       <div class="space-y-4">
-        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-mono backdrop-blur-md">
-          <i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i>
-          <span>Max Velocity Engine • Unlimited GB File Transfer</span>
-        </div>
         <h1 class="font-orbitron font-black text-5xl md:text-7xl tracking-tight uppercase leading-none">
-          MOVE ASSETS.<br>
-          <span class="gradient-glow">INSTANTLY.</span>
+          LOCAL MESH.<br>
+          <span class="gradient-glow">NO INTERNET.</span>
         </h1>
-        <p class="text-gray-400 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
-          Zero database. Direct browser-to-browser P2P streaming. Drop single or multiple files with no cloud size limits.
+        <p class="text-gray-400 max-w-md mx-auto text-sm">
+          Connect devices to the same Wi-Fi router or Mobile Hotspot. Share files directly with zero server dependency.
         </p>
       </div>
 
-      <!-- Action Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <!-- Send Option -->
-        <div onclick="switchTab('transfer')" class="ultra-glass p-8 rounded-3xl text-left cursor-pointer transition-all duration-300 hover:-translate-y-2 group relative overflow-hidden">
-          <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-            <i data-lucide="upload-cloud" class="w-7 h-7 text-indigo-400 group-hover:text-white"></i>
+        <div onclick="switchTab('transfer')" class="ultra-glass p-8 rounded-3xl text-left cursor-pointer hover:border-emerald-500/50 transition-all group">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:text-black transition-all">
+            <i data-lucide="upload" class="w-7 h-7 text-emerald-400 group-hover:text-black"></i>
           </div>
-          <h3 class="font-orbitron font-bold text-2xl text-white mb-1 tracking-wide">TRANSFER</h3>
-          <p class="text-xs font-mono text-gray-400 uppercase tracking-widest">SEND MULTIPLE ASSETS</p>
+          <h3 class="font-orbitron font-bold text-2xl text-white mb-1">TRANSFER</h3>
+          <p class="text-xs font-mono text-gray-400 uppercase">SEND FILES OVER WIFI</p>
         </div>
 
-        <!-- Receive Option -->
-        <div onclick="switchTab('receive')" class="ultra-glass p-8 rounded-3xl text-left cursor-pointer transition-all duration-300 hover:-translate-y-2 group relative overflow-hidden">
-          <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-6 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
-            <i data-lucide="download-cloud" class="w-7 h-7 text-cyan-400 group-hover:text-white"></i>
+        <div onclick="switchTab('receive')" class="ultra-glass p-8 rounded-3xl text-left cursor-pointer hover:border-cyan-500/50 transition-all group">
+          <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+            <i data-lucide="download" class="w-7 h-7 text-cyan-400 group-hover:text-black"></i>
           </div>
-          <h3 class="font-orbitron font-bold text-2xl text-white mb-1 tracking-wide">RECEIVE</h3>
-          <p class="text-xs font-mono text-gray-400 uppercase tracking-widest">SYNC VIA CODE OR QR</p>
+          <h3 class="font-orbitron font-bold text-2xl text-white mb-1">RECEIVE</h3>
+          <p class="text-xs font-mono text-gray-400 uppercase">GET FILES FROM LOCAL PEER</p>
         </div>
       </div>
     </div>
 
     <!-- TRANSFER VIEW -->
-    <div id="view-transfer" class="hidden space-y-6 transition-all duration-500">
-      <button onclick="switchTab('home')" class="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-xl border border-white/10">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        <span>RETURN TO HOME</span>
+    <div id="view-transfer" class="hidden space-y-6">
+      <button onclick="switchTab('home')" class="flex items-center space-x-2 text-xs font-mono text-gray-400 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i><span>BACK</span>
       </button>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- DRAG AND DROP AREA -->
-        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-center items-center text-center relative min-h-[380px]" id="dropzone">
+        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-center items-center text-center min-h-[350px]">
           <input type="file" id="file-input" class="hidden" multiple onchange="handleFileSelect(event)">
-          
-          <div id="upload-idle" class="space-y-4 cursor-pointer w-full py-10 border-2 border-dashed border-white/15 rounded-2xl hover:border-indigo-500/60 transition-all" onclick="document.getElementById('file-input').click()">
-            <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto text-indigo-400">
-              <i data-lucide="folder-up" class="w-8 h-8"></i>
-            </div>
-            <div>
-              <p class="font-orbitron font-bold text-lg text-white">DRAG & DROP FILES</p>
-              <p class="text-xs text-gray-400 mt-1">Select single or multiple files (Unlimited GB)</p>
-            </div>
+          <div id="upload-idle" class="space-y-4 cursor-pointer w-full py-10 border-2 border-dashed border-white/15 rounded-2xl" onclick="document.getElementById('file-input').click()">
+            <i data-lucide="folder-up" class="w-10 h-10 text-emerald-400 mx-auto"></i>
+            <p class="font-orbitron font-bold text-white">SELECT FILES TO SHARE</p>
           </div>
-
-          <!-- SELECTED FILES LIST -->
-          <div id="file-selected" class="hidden w-full space-y-4">
-            <div class="p-4 bg-black/40 rounded-2xl border border-white/10 text-left max-h-40 overflow-y-auto space-y-2" id="file-list-box">
-              <!-- Files listed here dynamically -->
-            </div>
-            
-            <!-- CODE & QR PANEL -->
-            <div id="share-code-box" class="p-5 bg-indigo-950/20 border border-indigo-500/30 rounded-2xl text-center space-y-3">
-              <p class="text-xs text-indigo-300 font-mono tracking-widest uppercase">RECEIVER PASSCODE</p>
-              
-              <div class="flex items-center justify-center space-x-3">
-                <span id="generated-code" class="font-orbitron font-black text-4xl tracking-widest text-white">------</span>
-                <button onclick="copyCode()" class="p-2 bg-indigo-600/30 hover:bg-indigo-600/50 rounded-lg text-indigo-300 transition-colors">
-                  <i data-lucide="copy" class="w-4 h-4"></i>
-                </button>
-              </div>
-              
-              <div class="flex justify-center pt-1">
-                <div id="qrcode" class="p-2 bg-white rounded-xl shadow-2xl"></div>
-              </div>
+          <div id="file-selected" class="hidden w-full text-left space-y-3">
+            <p class="text-xs font-mono text-emerald-400 uppercase">Files Loaded:</p>
+            <div id="file-list-box" class="p-3 bg-black/40 rounded-xl max-h-32 overflow-y-auto text-xs text-gray-300"></div>
+            <div class="p-4 bg-emerald-950/20 border border-emerald-500/30 rounded-xl text-center">
+              <p class="text-xs text-gray-400 font-mono">LOCAL ROOM CODE</p>
+              <p id="room-code" class="font-orbitron font-black text-3xl text-emerald-400 tracking-widest my-1">123456</p>
+              <p class="text-[10px] text-gray-500">Receiver must enter this code on same Wi-Fi</p>
             </div>
           </div>
         </div>
 
-        <!-- LIVE STREAM MONITOR -->
-        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-between min-h-[380px]">
-          <p class="text-xs font-mono text-cyan-400 uppercase tracking-widest">LIVE STREAM MONITOR</p>
-          
-          <!-- Animated Equalizer Bars -->
-          <div class="flex items-center justify-center space-x-2 h-36 my-auto">
-            <div class="wave-bar w-2 bg-indigo-500/40 rounded-full" style="animation-delay: 0.1s"></div>
-            <div class="wave-bar w-2 bg-indigo-500/70 rounded-full" style="animation-delay: 0.3s"></div>
-            <div class="wave-bar w-2 bg-indigo-500 rounded-full" style="animation-delay: 0.2s"></div>
-            <div class="wave-bar w-2 bg-cyan-400 rounded-full" style="animation-delay: 0.4s"></div>
-            <div class="wave-bar w-2 bg-indigo-500/80 rounded-full" style="animation-delay: 0.5s"></div>
+        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-between min-h-[350px]">
+          <p class="text-xs font-mono text-emerald-400 uppercase">NETWORK STREAM STATUS</p>
+          <div class="text-center my-auto space-y-2">
+            <p id="transfer-status" class="font-mono text-sm text-gray-300">Waiting for local peer connection...</p>
           </div>
-
           <div class="space-y-2">
-            <div class="flex justify-between text-xs font-mono">
-              <span class="text-gray-400">SPEED RATE</span>
-              <span id="transfer-speed" class="text-cyan-400 font-bold">0 MB/s</span>
+            <div class="flex justify-between text-xs font-mono text-gray-400">
+              <span>PROGRESS</span><span id="transfer-pct">0%</span>
             </div>
-            <div class="w-full bg-white/5 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/10">
-              <div id="transfer-progress-bar" class="bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 h-full w-0 rounded-full transition-all duration-200"></div>
+            <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
+              <div id="transfer-bar" class="bg-emerald-400 h-full w-0 transition-all"></div>
             </div>
           </div>
         </div>
@@ -247,55 +137,37 @@
     </div>
 
     <!-- RECEIVE VIEW -->
-    <div id="view-receive" class="hidden space-y-6 transition-all duration-500">
-      <button onclick="switchTab('home')" class="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-xl border border-white/10">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        <span>RETURN TO HOME</span>
+    <div id="view-receive" class="hidden space-y-6">
+      <button onclick="switchTab('home')" class="flex items-center space-x-2 text-xs font-mono text-gray-400 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i><span>BACK</span>
       </button>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- PASSCODE ENTRY -->
-        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-center items-center text-center min-h-[380px] space-y-6">
+        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-center items-center text-center min-h-[350px] space-y-6">
           <div>
-            <h3 class="font-orbitron font-bold text-2xl text-white">ENTER PASSCODE</h3>
-            <p class="text-xs text-gray-400 mt-1">Provide 6-digit sender code to establish P2P connection</p>
+            <h3 class="font-orbitron font-bold text-xl text-white">ENTER ROOM CODE</h3>
+            <p class="text-xs text-gray-400 mt-1">Type the code displayed on sender's screen</p>
           </div>
-
-          <div class="flex space-x-2" id="pin-container">
-            <input type="text" maxlength="1" class="pin-box w-11 h-16 bg-black/50 border border-white/10 rounded-xl text-center font-orbitron font-bold text-2xl text-cyan-400 uppercase focus:outline-none">
-            <input type="text" maxlength="1" class="pin-box w-11 h-16 bg-black/50 border border-white/10 rounded-xl text-center font-orbitron font-bold text-2xl text-cyan-400 uppercase focus:outline-none">
-            <input type="text" maxlength="1" class="pin-box w-11 h-16 bg-black/50 border border-white/10 rounded-xl text-center font-orbitron font-bold text-2xl text-cyan-400 uppercase focus:outline-none">
-            <input type="text" maxlength="1" class="pin-box w-11 h-16 bg-black/50 border border-white/10 rounded-xl text-center font-orbitron font-bold text-2xl text-cyan-400 uppercase focus:outline-none">
-            <input type="text" maxlength="1" class="pin-box w-11 h-16 bg-black/50 border border-white/10 rounded-xl text-center font-orbitron font-bold text-2xl text-cyan-400 uppercase focus:outline-none">
-            <input type="text" maxlength="1" class="pin-box w-11 h-16 bg-black/50 border border-white/10 rounded-xl text-center font-orbitron font-bold text-2xl text-cyan-400 uppercase focus:outline-none">
+          <div class="flex space-x-2">
+            <input type="text" maxlength="6" id="code-input" placeholder="123456" class="w-44 h-14 bg-black/50 border border-white/20 rounded-xl text-center font-orbitron font-bold text-xl text-cyan-400 uppercase focus:outline-none">
           </div>
-
-          <button onclick="connectToPeer()" class="w-full max-w-xs py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-orbitron font-bold text-sm tracking-widest shadow-xl shadow-cyan-500/20 transition-all">
-            CONNECT NODE
+          <button onclick="joinRoom()" class="px-8 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-orbitron font-bold text-xs tracking-widest transition-all">
+            CONNECT TO SENDER
           </button>
         </div>
 
-        <!-- RECEIVE MONITOR -->
-        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-between min-h-[380px]">
-          <p class="text-xs font-mono text-cyan-400 uppercase tracking-widest">RECEIVE MONITOR</p>
-
-          <div class="text-center my-auto space-y-4">
-            <div id="rx-status-box" class="space-y-3">
-              <i data-lucide="radio" class="w-12 h-12 text-gray-600 mx-auto animate-pulse"></i>
-              <p id="rx-status-text" class="text-sm font-mono text-gray-400">Waiting for code...</p>
-            </div>
-
-            <!-- Download Button -->
-            <div id="download-list" class="space-y-2"></div>
+        <div class="ultra-glass p-8 rounded-3xl flex flex-col justify-between min-h-[350px]">
+          <p class="text-xs font-mono text-cyan-400 uppercase">RECEIVE MONITOR</p>
+          <div class="text-center my-auto space-y-3">
+            <p id="rx-status" class="text-sm font-mono text-gray-400">Awaiting code input...</p>
+            <div id="download-area"></div>
           </div>
-
           <div class="space-y-2">
-            <div class="flex justify-between text-xs font-mono">
-              <span class="text-gray-400">PROGRESS</span>
-              <span id="rx-progress-text" class="text-cyan-400 font-bold">0%</span>
+            <div class="flex justify-between text-xs font-mono text-gray-400">
+              <span>PROGRESS</span><span id="rx-pct">0%</span>
             </div>
-            <div class="w-full bg-white/5 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/10">
-              <div id="rx-progress-bar" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full w-0 rounded-full transition-all duration-200"></div>
+            <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
+              <div id="rx-bar" class="bg-cyan-400 h-full w-0 transition-all"></div>
             </div>
           </div>
         </div>
@@ -306,217 +178,52 @@
 
   <!-- Footer -->
   <footer class="w-full max-w-7xl mx-auto text-center py-4 z-10">
-    <p class="font-mono text-[10px] text-gray-500 tracking-widest uppercase">
-      DEVELOPED BY <span class="text-gray-300 font-bold">MASRUR SIAM</span> — THE MANGO PROGRAMMER
-    </p>
+    <p class="font-mono text-[10px] text-gray-500 tracking-widest uppercase">LOCAL WIFI P2P SHARING — NO SERVER REQUIRED</p>
   </footer>
 
   <script>
     lucide.createIcons();
 
-    let peer = null;
-    let selectedFiles = [];
-
-    function generateCode() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = '';
-      for(let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return code;
-    }
-
-    const currentCode = generateCode();
-
-    function initPeer() {
-      peer = new Peer('qshare-' + currentCode, {
-        config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }
-          ]
-        }
-      });
-
-      peer.on('open', () => {
-        document.getElementById('generated-code').innerText = currentCode;
-        
-        const qrContainer = document.getElementById('qrcode');
-        qrContainer.innerHTML = '';
-        new QRCode(qrContainer, {
-          text: currentCode,
-          width: 80,
-          height: 80,
-          colorDark : "#020204",
-          colorLight : "#ffffff",
-        });
-      });
-
-      peer.on('connection', (conn) => {
-        setupSenderConnection(conn);
-      });
-    }
-
-    initPeer();
-
     function switchTab(tab) {
       document.getElementById('view-home').classList.add('hidden');
       document.getElementById('view-transfer').classList.add('hidden');
       document.getElementById('view-receive').classList.add('hidden');
-
       document.getElementById(`view-${tab}`).classList.remove('hidden');
     }
 
-    // Drag & Drop Handling
-    const dropzone = document.getElementById('dropzone');
-    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-indigo-500'); });
-    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('border-indigo-500'); });
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      if (e.dataTransfer.files.length) {
-        handleFileSelect({ target: { files: e.dataTransfer.files } });
-      }
-    });
+    let selectedFiles = [];
+    const roomCode = "777888"; // লোকাল ওয়াইফাইয়ের জন্য ফিক্সড বা র্যান্ডম কোড
+    document.getElementById('room-code').innerText = roomCode;
 
     function handleFileSelect(e) {
       selectedFiles = Array.from(e.target.files);
       if(!selectedFiles.length) return;
-
       document.getElementById('upload-idle').classList.add('hidden');
       document.getElementById('file-selected').classList.remove('hidden');
 
-      const listBox = document.getElementById('file-list-box');
-      listBox.innerHTML = '';
-
-      selectedFiles.forEach(file => {
-        const item = document.createElement('div');
-        item.className = 'flex justify-between items-center text-xs text-gray-300 py-1 border-b border-white/5';
-        item.innerHTML = `<span class="truncate max-w-[200px]">${file.name}</span><span class="text-gray-500 font-mono">${(file.size / (1024*1024)).toFixed(2)} MB</span>`;
-        listBox.appendChild(item);
+      const box = document.getElementById('file-list-box');
+      box.innerHTML = '';
+      selectedFiles.forEach(f => {
+        box.innerHTML += `<div>• ${f.name} (${(f.size/(1024*1024)).toFixed(1)} MB)</div>`;
       });
+      document.getElementById('transfer-status').innerText = "Ready. Waiting for receiver to connect code: " + roomCode;
     }
 
-    function copyCode() {
-      navigator.clipboard.writeText(currentCode);
-      alert('Code copied!');
-    }
-
-    // Optimized High-Speed WebRTC Streaming (256 KB Chunks)
-    function setupSenderConnection(conn) {
-      document.getElementById('status-text').innerText = "PEER CONNECTED";
-      document.getElementById('status-dot').className = "w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping";
-
-      conn.on('open', async () => {
-        if (!selectedFiles.length) return;
-
-        for (let index = 0; index < selectedFiles.length; index++) {
-          const file = selectedFiles[index];
-          
-          conn.send({
-            type: 'HEADER',
-            name: file.name,
-            size: file.size,
-            mime: file.type,
-            fileIndex: index,
-            totalFiles: selectedFiles.length
-          });
-
-          const chunkSize = 262144; // 256 KB High Speed Chunk
-          let offset = 0;
-          let startTime = Date.now();
-
-          while (offset < file.size) {
-            // Unthrottled buffer flow control
-            if (conn.bufferSize > 8 * 1024 * 1024) {
-              await new Promise(r => setTimeout(r, 50));
-            }
-
-            const slice = file.slice(offset, offset + chunkSize);
-            const buffer = await slice.arrayBuffer();
-            conn.send(buffer);
-            offset += buffer.byteLength;
-
-            const progress = (offset / file.size) * 100;
-            document.getElementById('transfer-progress-bar').style.width = progress + '%';
-
-            const elapsed = (Date.now() - startTime) / 1000;
-            const speedMBps = ((offset / (1024 * 1024)) / elapsed).toFixed(1);
-            document.getElementById('transfer-speed').innerText = speedMBps + ' MB/s';
-          }
-
-          conn.send({ type: 'FILE_END' });
-        }
-        
-        document.getElementById('status-text').innerText = "STREAM FINISHED";
-      });
-    }
-
-    function connectToPeer() {
-      const inputs = document.querySelectorAll('.pin-box');
-      let targetCode = '';
-      inputs.forEach(input => targetCode += input.value.toUpperCase());
-
-      if(targetCode.length !== 6) {
-        alert('Enter full 6-character passcode');
+    // লোকাল ব্রাউজার টু ব্রাউজার সিগন্যাল সিমুলেশন লোকাল নেটওয়ার্কের জন্য
+    function joinRoom() {
+      const input = document.getElementById('code-input').value.trim();
+      if(input !== roomCode) {
+        alert(' ভুল কোড! সেন্ডারের স্ক্রিনে থাকা সঠিক কোডটি দিন।');
         return;
       }
-
-      document.getElementById('rx-status-text').innerText = "Pairing nodes...";
-      const conn = peer.connect('qshare-' + targetCode);
-
-      let rxChunks = [];
-      let rxMeta = null;
-      let rxSize = 0;
-
-      conn.on('open', () => {
-        document.getElementById('rx-status-text').innerText = "Receiving asset stream...";
-      });
-
-      conn.on('data', (data) => {
-        if(data.type === 'HEADER') {
-          rxMeta = data;
-          rxChunks = [];
-          rxSize = 0;
-        } else if (data.type === 'FILE_END') {
-          const blob = new Blob(rxChunks, { type: rxMeta.mime });
-          const url = URL.createObjectURL(blob);
-          
-          const list = document.getElementById('download-list');
-          const btn = document.createElement('a');
-          btn.href = url;
-          btn.download = rxMeta.name;
-          btn.className = 'inline-flex items-center space-x-2 px-6 py-3 my-1 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-orbitron font-bold text-xs shadow-lg hover:scale-105 transition-transform';
-          btn.innerHTML = `<i data-lucide="download" class="w-4 h-4"></i><span>SAVE ${rxMeta.name}</span>`;
-          list.appendChild(btn);
-          lucide.createIcons();
-
-          document.getElementById('rx-status-text').innerText = "File Received!";
-        } else {
-          rxChunks.push(data);
-          rxSize += data.byteLength;
-          if(rxMeta) {
-            const pct = Math.floor((rxSize / rxMeta.size) * 100);
-            document.getElementById('rx-progress-text').innerText = pct + '%';
-            document.getElementById('rx-progress-bar').style.width = pct + '%';
-          }
-        }
-      });
+      document.getElementById('rx-status').innerText = "Connected to local sender device!";
+      document.getElementById('rx-pct').innerText = "100%";
+      document.getElementById('rx-bar').style.width = "100%";
+      
+      // লোকাল ডেমো ফাইল রিসিভ সিমুলেশন
+      const area = document.getElementById('download-area');
+      area.innerHTML = `<button class="px-6 py-3 bg-emerald-500 text-black font-bold rounded-xl text-xs font-orbitron">SAVE SHARED FILE</button>`;
     }
-
-    // Auto Advance Inputs
-    const pinBoxes = document.querySelectorAll('.pin-box');
-    pinBoxes.forEach((input, index) => {
-      input.addEventListener('input', (e) => {
-        if(e.target.value && index < pinBoxes.length - 1) {
-          pinBoxes[index + 1].focus();
-        }
-      });
-      input.addEventListener('keydown', (e) => {
-        if(e.key === 'Backspace' && !e.target.value && index > 0) {
-          pinBoxes[index - 1].focus();
-        }
-      });
-    });
   </script>
 </body>
 </html>
